@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Painel Financeiro DRE
 
-## Getting Started
+Sistema web completo com Next.js 14 (App Router), TypeScript, TailwindCSS, APIs em Node.js e PostgreSQL (Neon) usando `pg`.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js 14
+- TypeScript
+- TailwindCSS
+- PostgreSQL (Neon)
+- Driver `pg`
+
+## Estrutura
+
+- `src/app` - páginas e rotas API
+- `src/components` - componentes de UI
+- `src/lib` - conexão e schema do banco
+- `src/services` - regras de negócio (CSV/chat)
+- `src/types` - tipagens
+
+## Variáveis de ambiente
+
+Crie um `.env.local`:
+
+```env
+DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Rodando localmente
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## APIs
 
-## Learn More
+- `POST /api/upload-csv` - upload e processamento de CSV para tabela `dre`
+- `GET /api/dre` - lista dados da DRE com filtro/ordenação/paginação
+- `DELETE /api/dre` - remove todos os dados da DRE
+- `GET|POST|PUT|DELETE /api/users` - CRUD de usuários
+- `POST /api/chat-financeiro` - pergunta financeira -> SQL -> resultado
 
-To learn more about Next.js, take a look at the following resources:
+## SQL de exemplo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### EBITDA
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sql
+SELECT COALESCE(SUM(valor), 0) AS ebitda
+FROM dre
+WHERE conta ILIKE '%ebitda%'
+	AND data = (SELECT MAX(data) FROM dre);
+```
 
-## Deploy on Vercel
+### ROE
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```sql
+WITH base AS (
+	SELECT
+		SUM(CASE WHEN conta ILIKE '%lucro%liquido%' THEN valor ELSE 0 END) AS lucro_liquido,
+		SUM(CASE WHEN conta ILIKE '%patrim%liqu%' THEN valor ELSE 0 END) AS patrimonio_liquido
+	FROM dre
+	WHERE data = (SELECT MAX(data) FROM dre)
+)
+SELECT CASE WHEN patrimonio_liquido = 0 THEN NULL
+						ELSE (lucro_liquido / patrimonio_liquido) * 100
+			 END AS roe
+FROM base;
+```

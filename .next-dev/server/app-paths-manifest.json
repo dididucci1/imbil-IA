@@ -1,0 +1,6 @@
+{
+  "/dados/page": "app/dados/page.js",
+  "/page": "app/page.js",
+  "/api/chat-financeiro/route": "app/api/chat-financeiro/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js"
+}
