@@ -124,7 +124,7 @@ export function RelatoriosContent() {
   };
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <div className="mb-4 md:mb-6">
         <div className="mb-4">
           <h2 className="text-xl md:text-2xl font-bold text-slate-800">Relatórios Financeiros</h2>
