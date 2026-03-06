@@ -1,6 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/dados/page": "app/dados/page.js",
-  "/usuarios/page": "app/usuarios/page.js",
-  "/api/chat-financeiro/route": "app/api/chat-financeiro/route.js"
+  "/relatorios/page": "app/relatorios/page.js",
+  "/api/relatorios/route": "app/api/relatorios/route.js"
 }

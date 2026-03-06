@@ -206,15 +206,16 @@ export function ChatFinanceiro() {
   }
 
   return (
-    <section className="flex h-full min-h-0 flex-col rounded-xl border border-slate-200 bg-white p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-slate-800">Chat Financeiro</h3>
+    <section className="flex h-full min-h-0 flex-col rounded-xl border border-slate-200 bg-white p-3 md:p-4">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h3 className="text-base md:text-lg font-semibold text-slate-800">Chat Financeiro</h3>
         
         {voices.length > 0 && (
           <select
             value={selectedVoice}
             onChange={(e) => setSelectedVoice(e.target.value)}
-            className="rounded-lg border border-slate-200 px-2 py-1 text-xs outline-none ring-red-500 focus:ring"
+            className="hidden sm:block rounded-lg border border-slate-200 px-2 py-1 text-xs outline-none ring-red-500 focus:ring max-w-[200px]"
+            title="Selecionar voz da IA"
           >
             {voices.map((voice) => (
               <option key={voice.name} value={voice.name}>
@@ -225,16 +226,16 @@ export function ChatFinanceiro() {
         )}
       </div>
 
-      <div className="mb-3 min-h-0 flex-1 space-y-3 overflow-auto rounded-lg bg-slate-50 p-3">
+      <div className="mb-3 min-h-0 flex-1 space-y-2 md:space-y-3 overflow-auto rounded-lg bg-slate-50 p-2 md:p-3">
         {messages.map((message, index) => (
           <div
             key={`${message.role}-${index}`}
             className={`flex items-start gap-2 ${
-              message.role === "user" ? "ml-8" : "mr-8"
+              message.role === "user" ? "ml-4 md:ml-8" : "mr-4 md:mr-8"
             }`}
           >
             <div
-              className={`flex-1 rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${
+              className={`flex-1 rounded-lg px-2 md:px-3 py-2 text-xs md:text-sm whitespace-pre-wrap ${
                 message.role === "user"
                   ? "bg-red-600 text-white"
                   : "bg-white text-slate-700"
@@ -247,7 +248,7 @@ export function ChatFinanceiro() {
                 {currentSpeaking === index ? (
                   <button
                     onClick={stopSpeaking}
-                    className="rounded-lg bg-slate-600 px-2 py-1 text-xs font-semibold text-white hover:bg-slate-700"
+                    className="rounded-lg bg-slate-600 px-2 py-1 text-xs font-semibold text-white hover:bg-slate-700 shrink-0"
                     type="button"
                     title="Parar reprodução"
                   >
@@ -256,7 +257,7 @@ export function ChatFinanceiro() {
                 ) : (
                   <button
                     onClick={() => speakText(message, index)}
-                    className="rounded-lg bg-green-600 px-2 py-1 text-xs font-semibold text-white hover:bg-green-700"
+                    className="rounded-lg bg-green-600 px-2 py-1 text-xs font-semibold text-white hover:bg-green-700 shrink-0"
                     type="button"
                     title="Ouvir resposta"
                   >
@@ -275,25 +276,25 @@ export function ChatFinanceiro() {
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             placeholder={isListening ? "🎤 Ouvindo..." : "Digite ou fale sua pergunta"}
-            className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none ring-red-500 focus:ring"
+            className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-xs md:text-sm outline-none ring-red-500 focus:ring"
           />
           <button
             type="button"
             onClick={toggleListening}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+            className={`rounded-lg px-3 md:px-4 py-2 text-xs md:text-sm font-semibold shrink-0 ${
               isListening
                 ? "bg-red-600 text-white animate-pulse"
                 : "bg-slate-200 text-slate-700 hover:bg-slate-300"
             }`}
           >
-            {isListening ? "🎤 Gravando..." : "🎤"}
+            {isListening ? "🎤" : "🎤"}
           </button>
         </div>
         
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-red-600 px-4 py-2 text-xs md:text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
         >
           {loading ? "Consultando..." : "Perguntar"}
         </button>
