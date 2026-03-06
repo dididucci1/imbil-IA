@@ -22,7 +22,7 @@ export function AppShell({ children, session }: AppShellProps) {
     <>
       <Sidebar session={session} />
       <main className="h-screen overflow-hidden bg-slate-100 pl-72">
-        <div className="h-full overflow-hidden px-2 py-3 md:py-6">{children}</div>
+        <div className="h-full overflow-hidden pl-3 pr-6 py-3 md:py-6">{children}</div>
       </main>
     </>
   );

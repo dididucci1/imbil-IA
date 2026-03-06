@@ -124,9 +124,9 @@ export function RelatoriosContent() {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        <div>
+    <div>
+      <div className="mb-4 md:mb-6">
+        <div className="mb-4">
           <h2 className="text-xl md:text-2xl font-bold text-slate-800">Relatórios Financeiros</h2>
           <p className="text-xs md:text-sm text-slate-600">Comparativo anual de EBITDA e ROE</p>
         </div>
@@ -204,13 +204,13 @@ export function RelatoriosContent() {
       </div>
 
       {loading && (
-        <div className="flex items-center justify-center py-20">
+        <div className="flex items-center justify-center py-20 mt-4 md:mt-6">
           <div className="text-slate-600">Carregando dados...</div>
         </div>
       )}
 
       {!loading && (ebitdaData.length > 0 || roeData.length > 0) && (
-        <div ref={chartsRef} className="space-y-4 md:space-y-8 rounded-xl border border-slate-200 bg-white p-3 md:p-8">
+        <div ref={chartsRef} className="space-y-4 md:space-y-8 rounded-xl border border-slate-200 bg-white p-3 md:p-8 mt-4 md:mt-6">
           {/* Gráfico EBITDA */}
           <div>
             <h3 className="mb-2 md:mb-4 text-sm md:text-lg font-semibold text-slate-800">
