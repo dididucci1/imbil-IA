@@ -25,9 +25,13 @@ export function Sidebar({ session }: SidebarProps) {
       ? [
           { href: "/", label: "Dashboard" },
           { href: "/dados", label: "Dados" },
+          { href: "/relatorios", label: "Relatórios" },
           { href: "/usuarios", label: "Usuários" },
         ]
-      : [{ href: "/", label: "Dashboard" }];
+      : [
+          { href: "/", label: "Dashboard" },
+          { href: "/relatorios", label: "Relatórios" },
+        ];
 
   async function handleLogout() {
     setLoadingLogout(true);
@@ -53,7 +57,11 @@ export function Sidebar({ session }: SidebarProps) {
         {menuItems.map((item) => {
           const isActive = item.href !== "#" && pathname === item.href;
 
-          const icon = item.label === "Dashboard" ? "▤" : item.label === "Dados" ? "⛁" : "◌";
+          const icon = 
+            item.label === "Dashboard" ? "▤" : 
+            item.label === "Dados" ? "⛁" : 
+            item.label === "Relatórios" ? "▦" :
+            "◌";
 
           return (
             <Link
