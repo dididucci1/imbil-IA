@@ -13,4 +13,5 @@ export type ChatResponse = {
   indicator: FinancialIndicator;
   answer: string;
   value: number | null;
+  spokenAnswer?: string;
 };

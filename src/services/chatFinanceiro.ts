@@ -554,7 +554,9 @@ function buildRoeQuery(periodFilter: PeriodFilter | null) {
           CASE
             WHEN patrimonio_liquido = 0 THEN NULL
             ELSE (lucro_liquido / patrimonio_liquido) * 100
-          END AS value
+          END AS value,
+          lucro_liquido,
+          patrimonio_liquido
         FROM base;
       `,
       params: [periodFilter.month, periodFilter.year],
@@ -698,7 +700,9 @@ function buildRoeQuery(periodFilter: PeriodFilter | null) {
           CASE
             WHEN patrimonio_liquido = 0 THEN NULL
             ELSE (lucro_liquido / patrimonio_liquido) * 100
-          END AS value
+          END AS value,
+          lucro_liquido,
+          patrimonio_liquido
         FROM base;
       `,
       params: [periodFilter.month],
@@ -857,7 +861,9 @@ function buildRoeQuery(periodFilter: PeriodFilter | null) {
         CASE
           WHEN patrimonio_liquido = 0 THEN NULL
           ELSE (lucro_liquido / patrimonio_liquido) * 100
-        END AS value
+        END AS value,
+        lucro_liquido,
+        patrimonio_liquido
       FROM base;
     `,
     params: [],
@@ -1034,12 +1040,15 @@ export async function processFinancialQuestion(question: string): Promise<ChatRe
       indicator: "EBITDA",
       value,
       answer: `EBITDA${periodLabel}: ${formatCurrency(value)}\nLucro Operacional: ${formatCurrency(lucroOperacional)}\nDepreciação: ${formatCurrency(depreciacao)}`,
+      spokenAnswer: `Seu EBITDA${periodLabel} foi ${formatCurrency(value)}. Ele é composto por um Lucro Operacional de ${formatCurrency(lucroOperacional)} e Depreciação de ${formatCurrency(depreciacao)}.`,
     };
   }
 
   const query = buildRoeQuery(periodFilter);
-  const result = await dbQuery<{ value: number | null }>(query.sql, query.params);
+  const result = await dbQuery<{ value: number | null; lucro_liquido: number | null; patrimonio_liquido: number | null }>(query.sql, query.params);
   const value = result.rows[0]?.value ?? null;
+  const lucroLiquido = result.rows[0]?.lucro_liquido ?? null;
+  const patrimonioLiquido = result.rows[0]?.patrimonio_liquido ?? null;
 
   if (value === null) {
     const diagnostic = buildRoeDiagnosticSql(periodFilter);
@@ -1086,5 +1095,6 @@ export async function processFinancialQuestion(question: string): Promise<ChatRe
     indicator: "ROE",
     value,
     answer: `ROE${periodLabel}: ${formatPercent(value)}`,
+    spokenAnswer: `Seu ROE${periodLabel} foi ${formatPercent(value)}. Ele é composto por um Lucro Líquido de ${formatCurrency(lucroLiquido)} e Patrimônio Líquido de ${formatCurrency(patrimonioLiquido)}.`,
   };
 }

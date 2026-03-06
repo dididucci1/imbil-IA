@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 type Message = {
   role: "user" | "assistant";
   text: string;
+  spokenText?: string;
 };
 
 interface SpeechRecognitionEvent {
@@ -117,7 +118,7 @@ export function ChatFinanceiro() {
       .replace(/ROE/g, "ró i");
   }
 
-  function speakText(text: string, messageIndex: number) {
+  function speakText(message: Message, messageIndex: number) {
     if (typeof window === "undefined" || !window.speechSynthesis) {
       alert("Síntese de voz não suportada neste navegador.");
       return;
@@ -126,7 +127,9 @@ export function ChatFinanceiro() {
     // Para qualquer fala anterior
     window.speechSynthesis.cancel();
 
-    const processedText = processTextForSpeech(text);
+    // Usa spokenText se disponível, senão usa text
+    const textToSpeak = message.spokenText || message.text;
+    const processedText = processTextForSpeech(textToSpeak);
     const utterance = new SpeechSynthesisUtterance(processedText);
     
     // Configurações para voz mais fluida e natural
@@ -177,12 +180,14 @@ export function ChatFinanceiro() {
       }
 
       const assistantMessage = data.answer;
+      const spokenMessage = data.spokenAnswer || data.answer;
 
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
           text: assistantMessage,
+          spokenText: spokenMessage,
         },
       ]);
     } catch (error) {
@@ -192,6 +197,7 @@ export function ChatFinanceiro() {
         {
           role: "assistant",
           text: errorMessage,
+          spokenText: errorMessage,
         },
       ]);
     } finally {
@@ -249,7 +255,7 @@ export function ChatFinanceiro() {
                   </button>
                 ) : (
                   <button
-                    onClick={() => speakText(message.text, index)}
+                    onClick={() => speakText(message, index)}
                     className="rounded-lg bg-green-600 px-2 py-1 text-xs font-semibold text-white hover:bg-green-700"
                     type="button"
                     title="Ouvir resposta"
