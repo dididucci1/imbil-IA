@@ -1,9 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/dashboards/route": "app/api/dashboards/route.js",
-  "/api/auth/logout/route": "app/api/auth/logout/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js"
+  "/dados/page": "app/dados/page.js",
+  "/usuarios/page": "app/usuarios/page.js",
+  "/api/chat-financeiro/route": "app/api/chat-financeiro/route.js"
 }

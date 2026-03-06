@@ -29,6 +29,21 @@ const MONTHS_PT: Record<string, string> = {
   dezembro: "12",
 };
 
+const MONTH_NAMES_PT: Record<string, string> = {
+  "01": "janeiro",
+  "02": "fevereiro",
+  "03": "março",
+  "04": "abril",
+  "05": "maio",
+  "06": "junho",
+  "07": "julho",
+  "08": "agosto",
+  "09": "setembro",
+  "10": "outubro",
+  "11": "novembro",
+  "12": "dezembro",
+};
+
 type PeriodFilter = {
   month: number;
   year: number | null;
@@ -45,8 +60,8 @@ const EBITDA_DEPRECIACAO_MATCH = `
 
 const ROE_LUCRO_MATCH = `
   (
-    LOWER(BTRIM(COALESCE(id1, ''))) LIKE '(=) lucro liquido%'
-    OR LOWER(BTRIM(COALESCE(id1, ''))) LIKE '(=) lucro líquido%'
+    LOWER(BTRIM(COALESCE(id1, ''))) = LOWER('(=) Lucro Líquido')
+    OR LOWER(BTRIM(COALESCE(id1, ''))) = LOWER('(=) Lucro Liquido')
   )
 `.trim();
 
@@ -111,6 +126,19 @@ function formatPercent(value: number | null) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}%`;
+}
+
+function formatPeriodLabel(periodFilter: PeriodFilter | null): string {
+  if (!periodFilter) return "";
+  
+  const monthStr = String(periodFilter.month).padStart(2, "0");
+  const monthName = MONTH_NAMES_PT[monthStr] || monthStr;
+  
+  if (periodFilter.year) {
+    return ` em ${monthName} de ${periodFilter.year}`;
+  }
+  
+  return ` em ${monthName}`;
 }
 
 function buildEbitdaQuery(periodFilter: PeriodFilter | null) {
@@ -988,7 +1016,7 @@ function buildRoeDiagnosticSql(periodFilter: PeriodFilter | null) {
 export async function processFinancialQuestion(question: string): Promise<ChatResponse> {
   const indicator = detectIndicator(question);
   const periodFilter = detectPeriodFilter(question);
-  const periodLabel = periodFilter?.label ? ` (${periodFilter.label})` : "";
+  const periodLabel = formatPeriodLabel(periodFilter);
 
   if (indicator === "EBITDA") {
     const query = buildEbitdaQuery(periodFilter);
