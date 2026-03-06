@@ -1,4 +1,4 @@
-// File: C:\Users\didid\OneDrive\Área de Trabalho\Clientes Works Bi\IMBIL\teste\src\app\api\auth\login\route.ts
+// File: C:\Users\diego\OneDrive\Desktop\Imnil\imbil-IA\src\app\api\auth\login\route.ts
 import * as entry from '../../../../../../src/app/api/auth/login/route.js'
 import type { NextRequest } from 'next/server.js'
 

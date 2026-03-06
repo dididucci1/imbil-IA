@@ -1,4 +1,4 @@
-// File: C:\Users\didid\OneDrive\Área de Trabalho\Clientes Works Bi\IMBIL\teste\src\app\api\dashboards\route.ts
+// File: C:\Users\diego\OneDrive\Desktop\Imnil\imbil-IA\src\app\api\dashboards\route.ts
 import * as entry from '../../../../../src/app/api/dashboards/route.js'
 import type { NextRequest } from 'next/server.js'
 

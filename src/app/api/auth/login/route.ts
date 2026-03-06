@@ -14,7 +14,47 @@ type LoginUserRow = {
   status: "Ativo" | "Inativo";
 };
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function POST(request: Request) {
+  // Se NEXT_PUBLIC_API_URL está configurado, usa o backend remoto (Fly.dev)
+  if (BACKEND_URL) {
+    try {
+      const body = await request.json();
+      const cookieHeader = request.headers.get("cookie");
+
+      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(cookieHeader ? { cookie: cookieHeader } : {}),
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return NextResponse.json(data, { status: response.status });
+      }
+
+      const nextResponse = NextResponse.json(data);
+      
+      const setCookieHeader = response.headers.get("set-cookie");
+      if (setCookieHeader) {
+        nextResponse.headers.set("set-cookie", setCookieHeader);
+      }
+
+      return nextResponse;
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Erro ao autenticar." },
+        { status: 500 },
+      );
+    }
+  }
+
+  // Caso contrário, usa o banco local diretamente
   try {
     await ensureSchema();
 

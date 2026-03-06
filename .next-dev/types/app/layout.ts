@@ -1,4 +1,4 @@
-// File: C:\Users\didid\OneDrive\Área de Trabalho\Clientes Works Bi\IMBIL\teste\src\app\layout.tsx
+// File: C:\Users\diego\OneDrive\Desktop\Imnil\imbil-IA\src\app\layout.tsx
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
