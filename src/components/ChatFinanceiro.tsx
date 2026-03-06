@@ -7,6 +7,27 @@ type Message = {
   text: string;
 };
 
+interface SpeechRecognitionEvent {
+  results: {
+    [index: number]: {
+      [index: number]: {
+        transcript: string;
+      };
+    };
+  };
+}
+
+interface ISpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+}
+
 export function ChatFinanceiro() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
@@ -20,7 +41,7 @@ export function ChatFinanceiro() {
   const [currentSpeaking, setCurrentSpeaking] = useState<number | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>("");
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   useEffect(() => {
     // Carrega vozes disponíveis
@@ -45,13 +66,14 @@ export function ChatFinanceiro() {
 
     // Inicializa reconhecimento de voz
     if (typeof window !== "undefined" && ("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current = new SpeechRecognition() as ISpeechRecognition;
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
       recognitionRef.current.lang = "pt-BR";
 
-      recognitionRef.current.onresult = (event: any) => {
+      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = event.results[0][0].transcript;
         setQuestion(transcript);
         setIsListening(false);
